@@ -1,0 +1,84 @@
+Disk /dev/mmcblk0: 3.69 GiB, 3963617280 bytes, 7741440 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x24792230
+
+Device         Boot Start     End Sectors  Size Id Type
+/dev/mmcblk0p1       2048 7741439 7739392  3.7G  b W95 FAT32
+F3 probe 8.0
+Copyright (C) 2010 Digirati Internet LTDA.
+This is free software; see the source for copying conditions.
+
+WARNING: Probing normally takes from a few seconds to 15 minutes, but
+         it can take longer. Please be patient.
+
+Good news: The device `/dev/mmcblk0' is the real thing
+
+Device geometry:
+	         *Usable* size: 3.69 GB (7741440 blocks)
+	        Announced size: 3.69 GB (7741440 blocks)
+	                Module: 4.00 GB (2^32 Bytes)
+	Approximate cache size: 0.00 Byte (0 blocks), need-reset=no
+	   Physical block size: 512.00 Byte (2^9 Bytes)
+
+Probe time: 14'28"
+ Operation: total time / count = avg time
+      Read: 654.7ms / 4812 = 136us
+     Write: 14'25" / 3547201 = 244us
+     Reset: 0us / 1 = 0us
+
+First partition is /dev/mmcblk0p1, formatting it to FAT32
+mkfs.fat 4.2 (2021-01-31)
+No device specified.
+Disk /dev/mmcblk0: 3.69 GiB, 3963617280 bytes, 7741440 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x24792230
+
+Device         Boot Start     End Sectors  Size Id Type
+/dev/mmcblk0p1       2048 7741439 7739392  3.7G  b W95 FAT32
+
+First partition is /dev/mmcblk0p1, formatting it to FAT32
+mkfs.fat 4.2 (2021-01-31)
+/dev/mmcblk0p1 has 4 heads and 16 sectors per track,
+hidden sectors 0x0800;
+logical sector size is 512,
+using 0xf8 media descriptor, with 7739392 sectors;
+drive number 0x80;
+filesystem has 2 32-bit FATs and 8 sectors per cluster.
+FAT size is 7544 sectors, and provides 965534 clusters.
+There are 32 reserved sectors.
+Volume ID is 234408d9, no volume label.
+
+Performing R/W test on /dev/mmcblk0p1
+F3 write 8.0
+Copyright (C) 2010 Digirati Internet LTDA.
+This is free software; see the source for copying conditions.
+
+Free space: 3.68 GB
+Creating file 1.h2w ... OK!
+Creating file 2.h2w ... OK!
+Creating file 3.h2w ... OK!
+Creating file 4.h2w ... OK!
+Free space: 0.00 Byte
+Average writing speed: 3.90 MB/s
+F3 read 8.0
+Copyright (C) 2010 Digirati Internet LTDA.
+This is free software; see the source for copying conditions.
+
+                  SECTORS      ok/corrupted/changed/overwritten
+Validating file 1.h2w ... 2097152/        0/      0/      0
+Validating file 2.h2w ... 2097152/        0/      0/      0
+Validating file 3.h2w ... 2097152/        0/      0/      0
+Validating file 4.h2w ... 1432808/        0/      0/      0
+
+  Data OK: 3.68 GB (7724264 sectors)
+Data LOST: 0.00 Byte (0 sectors)
+	       Corrupted: 0.00 Byte (0 sectors)
+	Slightly changed: 0.00 Byte (0 sectors)
+	     Overwritten: 0.00 Byte (0 sectors)
+Average reading speed: 18.34 MB/s

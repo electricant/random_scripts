@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# Add the url into the download queue.
+# USAGE:
+#	sheget-add url [priority]
+#
+# Distributed under the GNU GPL v3
+#
+USAGE="Usage:\t\tsheget-add \"URL\" [priority]\n\n"`
+	`" URL\t\tURL to be enqueued for download\n"`
+	`" priority\tPriority for the download as an integer from 1 to 5.\n"`
+	`"\t\t1 is the lowest priority, 5 is the highest.\n"`
+	`"\t\tIf no value is supplied then 3 is chosen."
+
+# parse config file as a regular script (using source)
+. ./sheget.conf
+
+# Check user input
+if [ -z "$1" ]; then
+	echo -e "Please input a valid URL!\n"
+	echo -e $USAGE
+	exit 1
+fi
+
+pri=3
+if [ -n "$2" ]; then
+	if [ $2 -lt 1 ] || [ $2 -gt 5 ];  then
+		echo -e "Please insert a priority value between 1 and 5.\n"
+		echo -e $USAGE
+		exit 1
+	fi
+# if we get here $2 is a number from 1 to 5
+pri=$2
+fi
+
+# Escape URL (prevent SQL injection) and store it in a variable
+url=$(echo $1 | sed "s/'/''/")
+
+sqlite3 "$DB_PATH" "INSERT INTO downloads VALUES ('$url', $pri, 0);"

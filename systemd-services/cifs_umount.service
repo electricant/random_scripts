@@ -1,0 +1,14 @@
+# Service to unmount network shares before shutting down
+# inspiration taken from:
+# https://wiki.archlinux.org/index.php/Sshfs#Shutdown_hangs_when_sshfs_is_mounted
+
+[Unit]
+After=network.target
+
+[Service]
+RemainAfterExit=yes
+ExecStart=-/bin/true
+ExecStop=-/bin/umount -a -t cifs
+
+[Install]
+WantedBy=multi-user.target

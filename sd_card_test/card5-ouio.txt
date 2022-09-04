@@ -1,0 +1,34 @@
+Disk /dev/mmcblk0: 7.5 GiB, 8053063680 bytes, 15728640 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x3c9cb406
+
+Device         Boot Start      End  Sectors  Size Id Type
+/dev/mmcblk0p1 *     7718 15707519 15699802  7.5G  b W95 FAT32
+
+F3 probe 8.0
+Copyright (C) 2010 Digirati Internet LTDA.
+This is free software; see the source for copying conditions.
+
+WARNING: Probing normally takes from a few seconds to 15 minutes, but
+         it can take longer. Please be patient.
+
+Bad news: The device `/dev/mmcblk0' is a counterfeit of type limbo
+
+You can "fix" this device using the following command:
+f3fix --last-sec=8388607 /dev/mmcblk0
+
+Device geometry:
+	         *Usable* size: 4.00 GB (8388608 blocks)
+	        Announced size: 7.50 GB (15728640 blocks)
+	                Module: 8.00 GB (2^33 Bytes)
+	Approximate cache size: 63.00 MB (129024 blocks), need-reset=no
+	   Physical block size: 512.00 Byte (2^9 Bytes)
+
+Probe time: 2'21"
+ Operation: total time / count = avg time
+      Read: 7.10s / 262498 = 27us
+     Write: 2'14" / 903373 = 148us
+     Reset: 2us / 2 = 1us

@@ -1,0 +1,71 @@
+Disk /dev/mmcblk0: 7.5 GiB, 8053063680 bytes, 15728640 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x00000000
+
+Device         Boot Start      End  Sectors  Size Id Type
+/dev/mmcblk0p1         32 15728415 15728384  7.5G  b W95 FAT32
+
+F3 probe 8.0
+Copyright (C) 2010 Digirati Internet LTDA.
+This is free software; see the source for copying conditions.
+
+WARNING: Probing normally takes from a few seconds to 15 minutes, but
+         it can take longer. Please be patient.
+
+Good news: The device `/dev/mmcblk0' is the real thing
+
+Device geometry:
+	         *Usable* size: 7.50 GB (15728640 blocks)
+	        Announced size: 7.50 GB (15728640 blocks)
+	                Module: 8.00 GB (2^33 Bytes)
+	Approximate cache size: 0.00 Byte (0 blocks), need-reset=no
+	   Physical block size: 512.00 Byte (2^9 Bytes)
+
+Probe time: 5'05"
+ Operation: total time / count = avg time
+      Read: 541.1ms / 4813 = 112us
+     Write: 5'03" / 4192321 = 72us
+     Reset: 0us / 1 = 0us
+
+First partition is /dev/mmcblk0p1, formatting it to FAT32
+mkfs.fat 4.2 (2021-01-31)
+
+Performing R/W test on /dev/mmcblk0p1
+F3 write 8.0
+Copyright (C) 2010 Digirati Internet LTDA.
+This is free software; see the source for copying conditions.
+
+Free space: 7.49 GB
+Creating file 1.h2w ... OK!
+Creating file 2.h2w ... OK!
+Creating file 3.h2w ... OK!
+Creating file 4.h2w ... OK!
+Creating file 5.h2w ... OK!
+Creating file 6.h2w ... OK!
+Creating file 7.h2w ... OK!
+Creating file 8.h2w ... OK!
+Free space: 0.00 Byte
+Average writing speed: 4.51 MB/s
+F3 read 8.0
+Copyright (C) 2010 Digirati Internet LTDA.
+This is free software; see the source for copying conditions.
+
+                  SECTORS      ok/corrupted/changed/overwritten
+Validating file 1.h2w ... 2097152/        0/      0/      0
+Validating file 2.h2w ... 2097152/        0/      0/      0
+Validating file 3.h2w ... 2097152/        0/      0/      0
+Validating file 4.h2w ... 2097152/        0/      0/      0
+Validating file 5.h2w ... 2097152/        0/      0/      0
+Validating file 6.h2w ... 2097152/        0/      0/      0
+Validating file 7.h2w ... 2097152/        0/      0/      0
+Validating file 8.h2w ... 1017608/        0/      0/      0
+
+  Data OK: 7.49 GB (15697672 sectors)
+Data LOST: 0.00 Byte (0 sectors)
+	       Corrupted: 0.00 Byte (0 sectors)
+	Slightly changed: 0.00 Byte (0 sectors)
+	     Overwritten: 0.00 Byte (0 sectors)
+Average reading speed: 16.21 MB/s

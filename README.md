@@ -7,7 +7,11 @@ discover.
 
 ## backup
 
-Backup scripts I currently use
+Backup scripts I currently use.
+
+## batch-converters
+
+Convert files from one format to another repetitively.
 
 ## transmission
 
@@ -20,8 +24,13 @@ Networking-related scripts:
  * Setup traffic shaping
  * Update the DNS hosts blocklist used by unbound
  * Update the dynamic DNS hostname & IP mapping for my domain
+ * Start/stop an SSH proxy
 
 ## systemd-services
 
 Systemd services I had to create manually.
+
+## android
+
+Tweaks I used to apply to my android mobile phones.
 

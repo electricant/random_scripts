@@ -1,0 +1,15 @@
+#!/bin/bash -e
+#
+
+# Do not destroy directories. Exit on error
+set -e
+
+# Enable extra globbing options
+shopt -s extglob
+
+mkdir "$1_mozjpegged"
+
+for a in "$1/"*.@(jpg|JPG|jpeg|JPEG); do
+	echo Processing "$a"
+	cjpeg -quality 90 "$a" > "$1_mozjpegged"/$(basename "$a")
+done
