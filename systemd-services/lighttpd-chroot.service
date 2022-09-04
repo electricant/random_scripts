@@ -1,0 +1,14 @@
+[Unit]
+Description=Latest version of lighttpd and php-cgi run inside a chroot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Restart=always
+RootDirectory=/opt/chroot/sid
+ExecStartPre=/usr/sbin/lighttpd -t -f /etc/lighttpd/lighttpd.conf
+ExecStart=/usr/sbin/lighttpd -D -f /etc/lighttpd/lighttpd.conf
+
+[Install]
+WantedBy=multi-user.target

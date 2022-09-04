@@ -1,0 +1,23 @@
+[Unit]
+Description=Unbound DNS server inside Alpine Linux chroot
+Documentation=man:unbound(8)
+After=network.target
+Before=nss-lookup.target
+Wants=nss-lookup.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RootDirectory=/opt/chroot/alpine-unbound
+MountAPIVFS=true
+PrivateDevices=true
+BindReadOnlyPaths=/dev/log /run/systemd/journal/socket /run/systemd/journal/stdout
+BindReadOnlyPaths=/etc/unbound
+#ExecStartPre=-/usr/lib/unbound/package-helper chroot_setup
+#ExecStartPre=-/usr/lib/unbound/package-helper root_trust_anchor_update
+ExecStart=/usr/sbin/unbound -d -p
+#ExecStopPost=-/usr/lib/unbound/package-helper chroot_teardown
+ExecReload=+/bin/kill -HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target

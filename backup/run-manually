@@ -1,0 +1,2 @@
+nohup sudo ./backup.sh >/tmp/backup.log 2>&1 &
+# https://stackoverflow.com/questions/4369866/what-is-the-easiest-way-to-detach-daemonize-a-bash-script
