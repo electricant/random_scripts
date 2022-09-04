@@ -23,7 +23,7 @@ TARGET_DIR="/mnt/backup"
 BACKUP_FOLDER="data-backup"
 
 # To exclude files and folders use this file
-EXCLUDE_FILE="/var/www/backup/exclude.cfg"
+EXCLUDE_FILE="/home/pol/random_scripts/backup/exclude.cfg"
 
 # If this variable is set then, the corresponding disk is mounted to
 # $TARGET_DIR before running the backup and unmounted when the backup is done

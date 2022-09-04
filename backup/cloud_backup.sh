@@ -2,8 +2,7 @@
 #
 # Simple backup script for this server
 #
-set -e
-set -o pipefail
+set -euo pipefail
 
 # Config variables
 # See: http://www.mikerubel.org/computers/rsync_snapshots/#Rsync
@@ -19,7 +18,7 @@ SOURCE_DIRS=("/mnt/data/Documenti" "/mnt/data/radicale-data"
              "/mnt/data/syncthing" "/mnt/data/Foto" "/mnt/data/pg_database")
 DESTINATION="nas_backup@opc.scaramuzza.me:~/data"
 # Use absolute path if run within cron
-EXCLUDE_FILE="/var/www/backup/exclude.cfg"
+EXCLUDE_FILE="/home/pol/random_scripts/backup/exclude.cfg"
 
 for src_dir in "${SOURCE_DIRS[@]}"
 do
