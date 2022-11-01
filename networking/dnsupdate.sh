@@ -42,6 +42,7 @@ function update_DNS_record {
 	
 	echo "server $DNS_SERVER" >>$tempfile
 	echo "zone $DNS_ZONE" >>$tempfile
+	echo "update delete $DOMAIN A" >>$tempfile
 	echo "update add $DOMAIN 60 A $1" >>$tempfile
 	echo "send" >>$tempfile
 	
