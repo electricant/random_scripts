@@ -72,9 +72,10 @@ echo ""
 btrfs scrub status /mnt/data
 echo ""
 
-# possible updates
+# Notify about upgradable packages
 render_title "Software updates"
-apt-get update > /dev/null
+# skip update part if apt-daily.timer is running
+systemctl list-timers | grep -q apt-daily.timer || apt-get update > /dev/null
 apt-get -s upgrade | grep upgraded,
 
 # email footer
