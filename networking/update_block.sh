@@ -57,4 +57,4 @@ cat $TEMPFILE \
 
 # Install
 cp $TEMPFILE.unbound $TARGET
-#systemctl reload unbound-chroot
+systemctl reload unbound-chroot
