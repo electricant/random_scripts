@@ -4,7 +4,6 @@ TEMP_FILE=/tmp/mailLog.tmp
 RECIPIENT="paoscr@gmail.com"
 SUBJECT="Daily log files"
 LOG_SEPARATOR="******************************"
-WELCOME_MSG="Good morning.\n"
 
 # Very fancy trick to redirect all ouptut to a file
 # See: https://tldp.org/LDP/abs/html/x17974.html
@@ -28,13 +27,8 @@ echo '<html><body><pre style="font: monospace">'
 # Initial greetings.
 # How to get the ip address is taken from here:
 # http://unix.stackexchange.com/questions/22615/how-can-i-get-my-external-ip-address-in-bash
-echo -e "$WELCOME_MSG"
-ip=$(dig +short myip.opendns.com @208.67.222.222)
-echo The IP address is $ip
-echo ""
-echo Download speed test:
-wget --progress=dot:giga http://cachefly.cachefly.net/10mb.test \
-	-O /dev/null 2>&1 | tail -n2
+echo "Good morning."
+echo The IP address is $(dig +short myip.opendns.com @208.67.222.222)
 echo ""
 
 # uptime & temperatures (just for an overview)
@@ -44,14 +38,6 @@ echo ""
 sensors | grep temp1
 echo ""
 hddtemp /dev/sd[abcd] 2>&1
-echo ""
-
-
-# Successful logins
-render_title "Successful logins"
-last -f /var/log/wtmp.1 | head -n -2
-echo ""
-echo $(lastb -f /var/log/btmp.1 | wc -l) "failed login attempts."
 echo ""
 
 # kernel log
