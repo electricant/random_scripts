@@ -16,6 +16,8 @@ MATCH_DIR='*/distro-iso'
 TARGET_RATIO='20.0'
 # Set priority. Can be one of either high|normal|low
 PRIORITY='low'
+# Automatically remove torrents older than this date. Set to 0 to disable
+AUTOREMOVE_DATE=$(date +%s -d "6 months ago")
 
 # Function to list all available (active) torrents by id
 # For details about awk matching see:
@@ -50,6 +52,12 @@ function get_target_ratio {
 		awk '/Ratio Limit:/ {print $3}'
 }
 
+# Get the time when the torrent was added as unix epoch
+function get_added_epoch {
+	date +%s -d "$(transmission-remote --auth $AUTH -t $1 --info | \
+		awk '/Date added:/ {print $3,$4,$5,$6,$7}')"
+}
+
 # Set the seed ratio of a certain torrent id to the declared value
 function set_seed_ratio {
 	transmission-remote --auth $AUTH --torrent $1 --seedratio $2
@@ -66,9 +74,16 @@ for id in `list_active_ids`; do
 	echo "Processing $(get_name $id) (ID: $id)..."
 	if [[ $(get_data_dir $id) = $MATCH_DIR ]]; then
 		echo "Data directory matched." \
-			"Current ratio: $(get_cur_ratio $id)/$(get_target_ratio $id)"
-		set_seed_ratio $id $TARGET_RATIO
-		set_priority $id $PRIORITY
+			"Current ratio: $(get_cur_ratio $id)/$(get_target_ratio $id)" 
+		
+		if [ $(get_added_epoch $id) -lt $AUTOREMOVE_DATE ]
+		then
+			echo "Torrent too old: removed."
+			transmission-remote --auth $AUTH -t $id --remove-and-delete
+		else
+			set_seed_ratio $id $TARGET_RATIO
+			set_priority $id $PRIORITY
+		fi
 	fi
 done
 echo DONE.
