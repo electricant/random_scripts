@@ -7,8 +7,8 @@ set -e # Exit when any command fails
 
 # Lists to pull the hosts from
 SOURCES=("http://www.malwaredomainlist.com/hostslist/hosts.txt"
+         "https://dl.nrd-list.com/3/nrd-list-7-days.txt"
          "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Dead/hosts"
-	   "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"
 	   "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts"
 	   "https://raw.githubusercontent.com/mitchellkrogza/Badd-Boyz-Hosts/master/hosts"
 	   "https://raw.githubusercontent.com/azet12/KADhosts/master/KADhosts.txt"
@@ -31,30 +31,28 @@ echo "" > $TEMPFILE
 for src in ${SOURCES[@]}
 do
 	echo Downloading $src
-	# remove unneeded whitespace and make all ips 0.0.0.0
-	curl -s $src | awk '{sub("127.0.0.1", "0.0.0.0"); print}' >>$TEMPFILE 
+	# Filter out comment lines and extract hostnames only
+	curl -s $src | grep -v '#' \
+		| perl -nle '<> =~ /(\S+\.\w{2,})$/; print $1' >>$TEMPFILE 
 done
 
 echo Lines before cleanup:
 wc -l $TEMPFILE
 
-# Filter only lines in the form 0.0.0.0 hostname
-# ignoring also comments & removing localhost stuff
-cat $TEMPFILE | awk '/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+ .+$/ { print $1,$2 }' \
-     | grep -vE 'local$|localhost.*$|broadcasthost$|ip6-.*$' > $TEMPFILE.dedup
-# Cleanup 2nd pass: remove duplicates
-sort -u $TEMPFILE.dedup > $TEMPFILE
+# Remove duplicated hostnames
+sort -u $TEMPFILE > $TEMPFILE.dedup
 
 echo Lines after cleanup:
-wc -l $TEMPFILE
+wc -l $TEMPFILE.dedup
 
-# Now convert it into a format that unbound can handle
+# Now convert everything into a format that unbound can handle
 # see: https://deadc0de.re/articles/unbound-blocking-ads.html
 # https://stackoverflow.com/questions/11687216/awk-to-skip-the-blank-lines
-cat $TEMPFILE \
-	| awk 'NF {print "local-zone: \""$2"\" redirect"
-	           print "local-data: \""$2" A "$1"\""}' > $TEMPFILE.unbound
+cat $TEMPFILE.dedup \
+	| awk 'NF {print "local-zone: \""$1"\" redirect"
+	           print "local-data: \""$1" A 0.0.0.0\""}' > $TEMPFILE.unbound
 
 # Install
 cp $TEMPFILE.unbound $TARGET
 systemctl reload unbound-chroot
+
