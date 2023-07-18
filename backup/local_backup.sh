@@ -71,7 +71,7 @@ timestamp=$(date +%s)
 btrfs subvolume snapshot -r "$SRC_DIR" "$SRC_DIR/snap-$timestamp"
 
 echo "Backup for $SRC_DIR/snap-$timestamp started."
-rsync -aAXH -h --info=stats1,del2 --delete --exclude-from="$EXCLUDE_FILE" \
+rsync -aAXH -h --info=stats1 --delete --exclude-from="$EXCLUDE_FILE" \
 	"$SRC_DIR/snap-$timestamp/" "$TARGET_DIR/$BACKUP_FOLDER.0"
 
 # Print total space used for backup
