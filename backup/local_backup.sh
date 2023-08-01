@@ -4,6 +4,8 @@
 # http://www.mikerubel.org/computers/rsync_snapshots/#Rsync
 # https://borgbackup.readthedocs.io/en/stable/deployment/automated-local.html
 #
+# It requires the surce directory to live within a btrfs filesystem, so that
+# we can create a read-only snapshot to freeze the content before copying.
 set -euo pipefail
 
 # Only for debug
@@ -29,6 +31,24 @@ EXCLUDE_FILE="/home/pol/random_scripts/backup/exclude.cfg"
 # $TARGET_DIR before running the backup and unmounted when the backup is done
 BACKUP_DISK="/dev/disk/by-id/usb-Generic_External_FF1000DF00000000000000F1DB2FFF-0:0"
 BACKUP_PART="${BACKUP_DISK}-part1"
+
+# Read command line parameters (if any)
+# Parameters:
+#	-l --list-snapshots	Prints a list of the available snapshots and
+#	                   	their creation time.
+#
+while [[ "$#" -gt 0 ]]; do
+	case $1 in
+		-l|--list-snapshots)
+			find $SRC_DIR -mindepth 1 -maxdepth 1 -name "snap-*" \
+				-exec btrfs subvolume show {} \; | egrep "snap-|Creation"
+			shift ;;
+		*)
+			echo "Unknown parameter passed: $1"
+			exit 1 ;;
+    esac
+    shift
+done
 
 # Mount file system if not already done.
 # This assumes that if something is already mounted at $TARGET_DIR, it is the
