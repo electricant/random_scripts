@@ -1,3 +1,4 @@
+# /etc/systemd/system/lighttpd-chroot.service
 [Unit]
 Description=Latest version of lighttpd and php-cgi run inside a chroot
 After=network-online.target
@@ -5,10 +6,15 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-Restart=always
-RootDirectory=/opt/chroot/sid
+RootDirectory=/opt/chroot/alpine-webserver
+MountAPIVFS=true
+PrivateDevices=true
+BindReadOnlyPaths=/dev/log /run/systemd/journal/socket /run/systemd/journal/stdout
+BindPaths=/var/www
 ExecStartPre=/usr/sbin/lighttpd -t -f /etc/lighttpd/lighttpd.conf
 ExecStart=/usr/sbin/lighttpd -D -f /etc/lighttpd/lighttpd.conf
+Restart=always
+RestartSec=60
 
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+# /etc/systemd/system/postgresql-chroot.service
+[Unit]
+Description=PostgreSQL database server in chroot environment
+Documentation=https://www.postgresql.org/docs/current/server-start.html
+Documentation=man:postgres(1)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=exec
+User=postgres
+RootDirectory=/opt/chroot/alpine-webserver
+MountAPIVFS=true
+PrivateDevices=true
+ExecStart=/usr/bin/postgres -D /var/lib/postgresql/data
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
