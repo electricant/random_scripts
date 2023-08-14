@@ -8,8 +8,9 @@ RootDirectory=/opt/chroot/alpine-transmission
 BindPaths=/mnt/data/Downloads
 MountAPIVFS=true
 User=debian-transmission
+Group=uuidd
 Type=simple
-ExecStart=/usr/bin/transmission-daemon -f --log-info -g /etc/transmission-daemon
+ExecStart=/usr/bin/transmission-daemon -f --log-level=info -g /etc/transmission-daemon
 ExecStop=/bin/kill -s STOP $MAINPID
 ExecReload=/bin/kill -s HUP $MAINPID
 
