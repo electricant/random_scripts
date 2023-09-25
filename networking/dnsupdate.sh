@@ -15,7 +15,7 @@ DNS_ZONE="scaramuzza.me"
 DOMAIN="go.scaramuzza.me"
 
 # DNSSEC key file for authentication
-KEY_FILE="/root/dnssec/Kbig-gnu.+157+05954.private"
+KEY_FILE="/root/dnssec/Kgo.scaramuzza.me.+010+30666.private"
 
 ##
 # Print the current IP as reported by the DNS server
