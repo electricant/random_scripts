@@ -6,9 +6,7 @@
 set -e # Exit when any command fails
 
 # Lists to pull the hosts from
-SOURCES=("http://www.malwaredomainlist.com/hostslist/hosts.txt"
-         "https://dl.nrd-list.com/3/nrd-list-7-days.txt"
-         "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Dead/hosts"
+SOURCES=("https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Dead/hosts"
 	   "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts"
 	   "https://raw.githubusercontent.com/mitchellkrogza/Badd-Boyz-Hosts/master/hosts"
 	   "https://raw.githubusercontent.com/azet12/KADhosts/master/KADhosts.txt"
@@ -16,6 +14,8 @@ SOURCES=("http://www.malwaredomainlist.com/hostslist/hosts.txt"
 	   "https://raw.githubusercontent.com/d43m0nhLInt3r/socialblocklists/master/TikTok/tiktokblocklist.txt"
 	   "https://raw.githubusercontent.com/d43m0nhLInt3r/socialblocklists/master/Tracking/trackingblocklist.txt"
 	   "https://phishing.army/download/phishing_army_blocklist.txt"
+	   "https://raw.githubusercontent.com/smed79/mdlm/master/hosts.txt"
+	   "https://reddestdream.github.io/Projects/MinimalHosts/etc/MinimalHostsBlocker/minimalhosts"
 	  )
 
 # Temporary file where the hosts are stored
@@ -33,7 +33,7 @@ do
 	echo Downloading $src
 	# Filter out comment lines and extract hostnames only
 	curl -s $src | grep -v '#' \
-		| perl -nle '<> =~ /(\S+\.\w{2,})$/; print $1' >>$TEMPFILE 
+		| sed -nr 's/.*\s(\w+\.[a-zA-Z]+)$/\1/p' >>$TEMPFILE
 done
 
 echo Lines before cleanup:
