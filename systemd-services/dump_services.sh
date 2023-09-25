@@ -27,6 +27,8 @@ services=(
 	"postgresql-chroot.service"
 	"transmission-daemon-chroot.service"
 	"unbound-chroot.service"
+	"dnsupdate.service"
+	"dnsupdate.timer"
 )
 
 for s in "${services[@]}"; do
