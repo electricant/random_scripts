@@ -13,9 +13,9 @@ SOURCES=("https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Dea
 	   "https://someonewhocares.org/hosts/hosts"
 	   "https://raw.githubusercontent.com/d43m0nhLInt3r/socialblocklists/master/TikTok/tiktokblocklist.txt"
 	   "https://raw.githubusercontent.com/d43m0nhLInt3r/socialblocklists/master/Tracking/trackingblocklist.txt"
-	   "https://phishing.army/download/phishing_army_blocklist.txt"
 	   "https://raw.githubusercontent.com/smed79/mdlm/master/hosts.txt"
 	   "https://reddestdream.github.io/Projects/MinimalHosts/etc/MinimalHostsBlocker/minimalhosts"
+	   "https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/Phishing.Database/master/output/domains.list/hosts/ACTIVE/hosts"
 	  )
 
 # Temporary file where the hosts are stored
