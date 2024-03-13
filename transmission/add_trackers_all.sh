@@ -24,7 +24,8 @@ echo "Adding trackers..."
 
 count=0
 for tracker in $(curl -sS $TRACKERS_URL) ; do
-	transmission-remote --auth=$AUTH -t$(all_torrents) \
+	#transmission-remote --auth=$AUTH -t$(all_torrents) \
+	transmission-remote --auth=$AUTH --torrent all \
 		-td "${tracker}"
 	count=$((count + 1))
 done

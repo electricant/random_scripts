@@ -19,7 +19,7 @@ NUM_OLD=11 # 1 year's worth of backups
 SRC_DIR="/mnt/data"
 
 # Target directory for backups. Also used as mount point if $BACKUP_DISK is set
-TARGET_DIR="/mnt/backup"
+TARGET_DIR="/mnt/backup/monthly"
 
 # Folder name for the backup within TARGET_DIR
 BACKUP_FOLDER="data-backup"
@@ -29,8 +29,9 @@ EXCLUDE_FILE="/home/pol/random_scripts/backup/exclude.cfg"
 
 # If this variable is set then, the corresponding disk is mounted to
 # $TARGET_DIR before running the backup and unmounted when the backup is done
-BACKUP_DISK="/dev/disk/by-id/usb-Generic_External_FF1000DF00000000000000F1DB2FFF-0:0"
-BACKUP_PART="${BACKUP_DISK}-part1"
+#BACKUP_DISK="/dev/disk/by-id/usb-Generic_External_FF1000DF00000000000000F1DB2FFF-0:0"
+BACKUP_DISK=""
+#BACKUP_PART="${BACKUP_DISK}-part1"
 
 # Read command line parameters (if any)
 # Parameters:
@@ -53,7 +54,7 @@ done
 # Mount file system if not already done.
 # This assumes that if something is already mounted at $TARGET_DIR, it is the
 # backup drive. It won't find the drive if it was mounted somewhere else.
-if [ -n $BACKUP_DISK ]
+if [ -n "$BACKUP_DISK" ]
 then 
 	(mount | grep "$TARGET_DIR") || mount "$BACKUP_PART" "$TARGET_DIR"
 fi
