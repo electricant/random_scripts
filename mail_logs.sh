@@ -35,6 +35,9 @@ echo ""
 render_title "uptime & temperatures"
 uptime
 echo "" 
+ps -eo pcpu,pid,user:20,args --sort -pcpu \
+	| awk '!/(ps -eo|mail_logs.sh)/ {print substr($0, 1, 80); if (++count == 6) exit}'
+echo ""
 sensors | grep temp1
 echo ""
 hddtemp /dev/sd[abcd] 2>&1
