@@ -88,7 +88,7 @@ cp -alf "$TARGET_DIR/$BACKUP_FOLDER.1/." \
    "$TARGET_DIR/$BACKUP_FOLDER.0" || echo "$BACKUP_FOLDER.0 not hard-linked."
 
 # Then take a snapshot using the current timestamp and copy latest files
-timestamp=$(date +%s)
+timestamp=$(date +"%Y%m%d_%H%M%S")
 btrfs subvolume snapshot -r "$SRC_DIR" "$SRC_DIR/snap-$timestamp"
 
 echo "Backup for $SRC_DIR/snap-$timestamp started."
