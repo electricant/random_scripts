@@ -15,7 +15,7 @@ DNS_ZONE="scaramuzza.me"
 DOMAIN="go.scaramuzza.me"
 
 # DNSSEC key file for authentication
-KEY_FILE="/root/dnssec/Kgo.scaramuzza.me.+010+30666.private"
+KEY_FILE="/root/dnssec/gnu-nas.key"
 
 ##
 # Print the current IP as reported by the DNS server
@@ -46,7 +46,7 @@ function update_DNS_record {
 	echo "update add $DOMAIN 60 A $1" >>$tempfile
 	echo "send" >>$tempfile
 	
-	nsupdate -v -k $KEY_FILE $tempfile
+	nsupdate -d -k $KEY_FILE -v $tempfile
 }
 
 set -x # For debug, print command trace to standard error
