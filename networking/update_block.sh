@@ -6,16 +6,14 @@
 set -e # Exit when any command fails
 
 # Lists to pull the hosts from
-SOURCES=("https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Dead/hosts"
-	   "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts"
-	   "https://raw.githubusercontent.com/mitchellkrogza/Badd-Boyz-Hosts/master/hosts"
-	   "https://raw.githubusercontent.com/azet12/KADhosts/master/KADhosts.txt"
-	   "https://someonewhocares.org/hosts/hosts"
-	   "https://raw.githubusercontent.com/d43m0nhLInt3r/socialblocklists/master/TikTok/tiktokblocklist.txt"
-	   "https://raw.githubusercontent.com/d43m0nhLInt3r/socialblocklists/master/Tracking/trackingblocklist.txt"
-	   "https://raw.githubusercontent.com/smed79/mdlm/master/hosts.txt"
-	   "https://reddestdream.github.io/Projects/MinimalHosts/etc/MinimalHostsBlocker/minimalhosts"
-	   "https://raw.githubusercontent.com/Ultimate-Hosts-Blacklist/Phishing.Database/master/output/domains.list/hosts/ACTIVE/hosts"
+SOURCES=(
+	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/pro-compressed.txt"
+	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/fake-onlydomains.txt"
+	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/doh.txt"
+	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/tif-compressed.txt"
+	"https://v.firebog.net/hosts/static/w3kbl.txt"
+	"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts"
+	"https://raw.githubusercontent.com/danhorton7/pihole-block-tiktok/main/tiktok.txt"
 	  )
 
 # Temporary file where the hosts are stored
@@ -32,12 +30,11 @@ for src in ${SOURCES[@]}
 do
 	echo Downloading $src
 	# Filter out comment lines and extract hostnames only
-	curl -s $src | grep -v '#' \
-		| sed -nr 's/.*\s(\w+\.[a-zA-Z]+)$/\1/p' >>$TEMPFILE
+	curl -s $src \
+		| awk 'NF && !/^#/ { if (NF == 1) print $1; else print $2 }' \
+		>> $TEMPFILE
+	wc -l $TEMPFILE
 done
-
-echo Lines before cleanup:
-wc -l $TEMPFILE
 
 # Remove duplicated hostnames
 sort -u $TEMPFILE > $TEMPFILE.dedup
