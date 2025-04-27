@@ -31,7 +31,7 @@ function get_DNS_IP {
 # Print the public IP address
 ##
 function get_public_IP {
-	dig +short myip.opendns.com @resolver1.opendns.com
+	dig +short myip.opendns.com @208.67.222.222
 }
 
 ##
