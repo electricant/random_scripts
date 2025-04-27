@@ -41,8 +41,9 @@ BACKUP_DISK=""
 while [[ "$#" -gt 0 ]]; do
 	case $1 in
 		-l|--list-snapshots)
-			find $SRC_DIR -mindepth 1 -maxdepth 1 -name "snap-*" \
-				-exec btrfs subvolume show {} \; | egrep "snap-|Creation"
+			for d in "$SRC_DIR/.snapshots"/*; do
+				sudo btrfs subvolume show "$d" | egrep "Name|Creation"
+			done
 			shift ;;
 		*)
 			echo "Unknown parameter passed: $1"
@@ -50,6 +51,15 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
+
+# Acquire a lock file to prevent double runs
+lockfile="/run/lock/local_backup.lock"
+if [ -e "$lockfile" ]; then
+    echo "Backup script already running. Exiting."
+    exit 1
+fi
+trap 'rm -f "$lockfile"' EXIT
+touch "$lockfile"
 
 # Mount file system if not already done.
 # This assumes that if something is already mounted at $TARGET_DIR, it is the
@@ -89,15 +99,21 @@ cp -alf "$TARGET_DIR/$BACKUP_FOLDER.1/." \
 
 # Then take a snapshot using the current timestamp and copy latest files
 timestamp=$(date +"%Y%m%d_%H%M%S")
-btrfs subvolume snapshot -r "$SRC_DIR" "$SRC_DIR/snap-$timestamp"
+btrfs subvolume snapshot -r "$SRC_DIR" "$SRC_DIR/.snapshots/snap-$timestamp"
+
+# check if snapshot was really created before trying rsync
+if [ ! -d "$SRC_DIR/.snapshots/snap-$timestamp" ]; then
+  echo "Snapshot creation failed. Aborting backup!"
+  exit 1
+fi
 
 echo "Backup for $SRC_DIR/snap-$timestamp started."
 rsync -aAXH -h --info=stats1 --delete --exclude-from="$EXCLUDE_FILE" \
-	"$SRC_DIR/snap-$timestamp/" "$TARGET_DIR/$BACKUP_FOLDER.0"
+	"$SRC_DIR/.snapshots/snap-$timestamp/" "$TARGET_DIR/$BACKUP_FOLDER.0"
 
 # Print total space used for backup
 echo "Backup done."
-du -h -d1 $TARGET_DIR
+du -h -d1 "$TARGET_DIR"
 
 # Finally unmount and stop disk
 sync

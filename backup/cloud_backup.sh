@@ -16,7 +16,7 @@ TARGET_DIR="/mnt/backup/weekly"
 BACKUP_PREFIX="data-backup"
 
 # Maximum backup size in GB. The script will delete old backups up to this limit
-BACKUP_MAX_SIZE_GB=100
+BACKUP_MAX_SIZE_GB=90
 
 # Source directories.
 #
@@ -87,7 +87,7 @@ su - postgres -c 'pg_dumpall -h localhost' \
 	| zstd -fo "$local_destination/pg_dump.zstd"
 
 # Check and enforce quota usage
-echo "INFO: Quota usage in $TARGET_DIR is $(backup_folder_size_GB) GB."
+echo "INFO: Quota usage in $TARGET_DIR is $(backup_folder_size_GB)/$BACKUP_MAX_SIZE_GB GB"
 
 while [ $(backup_folder_size_GB) -gt $BACKUP_MAX_SIZE_GB ]
 do
