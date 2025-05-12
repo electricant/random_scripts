@@ -1,0 +1,40 @@
+[Unit]
+Description=ExpenseOwl service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+ExecStart=/var/www/expenseowl/expenseowl-linux-amd64
+
+# Working directory (optional but good if your app needs relative paths)
+WorkingDirectory=/var/www/expenseowl
+
+# Restart policy
+Restart=always
+RestartSec=5
+
+# Security and isolation options
+ProtectSystem=full
+ProtectHome=true
+PrivateTmp=true
+NoNewPrivileges=true
+CapabilityBoundingSet=
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+PrivateUsers=true
+
+# Sandboxing
+AmbientCapabilities=
+SystemCallArchitectures=native
+LockPersonality=true
+MemoryDenyWriteExecute=true
+RestrictNamespaces=true
+
+[Install]
+WantedBy=multi-user.target
+
