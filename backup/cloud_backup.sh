@@ -27,8 +27,8 @@ BACKUP_MAX_SIZE_GB=90
 # produces b/a/foo, whereas this command:
 #     rsync -a a/ b
 # produces b/foo.
-SOURCE_DIRS=("/mnt/data/Documenti" "/mnt/data/radicale-data"
-             "/mnt/data/syncthing" "/mnt/data/Foto")
+SOURCE_DIRS=("/mnt/data/Documenti" "/mnt/data/Foto" "/mnt/data/expenseowl"
+             "/mnt/data/radicale-data" "/mnt/data/syncthing")
 
 # Remote destination where the backup will be stored
 REMOTE="nas_backup@opc.scaramuzza.me:~/data"

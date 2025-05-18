@@ -7,10 +7,10 @@ StartLimitIntervalSec=0
 Type=simple
 User=www-data
 Group=www-data
-ExecStart=/var/www/expenseowl/expenseowl-linux-amd64
+ExecStart=/var/www/expenseowl/expenseowl-linux-amd64 -data /mnt/data/expenseowl
 
 # Working directory (optional but good if your app needs relative paths)
-WorkingDirectory=/var/www/expenseowl
+WorkingDirectory=/mnt/data/expenseowl
 
 # Restart policy
 Restart=always
