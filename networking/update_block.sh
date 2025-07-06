@@ -7,11 +7,12 @@ set -e # Exit when any command fails
 
 # Lists to pull the hosts from
 SOURCES=(
-	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/pro-compressed.txt"
+	"https://phishing.army/download/phishing_army_blocklist.txt"
+	"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-social-only/hosts"
+	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/pro.mini-onlydomains.txt"
 	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/fake-onlydomains.txt"
-	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/doh.txt"
-	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/tif-compressed.txt"
-	"https://v.firebog.net/hosts/static/w3kbl.txt"
+	"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/wildcard/doh-vpn-proxy-bypass-onlydomains.txt"
+	"https://raw.githubusercontent.com/xRuffKez/NRD/refs/heads/main/lists/14-day/domains-only/nrd-14day-mini.txt"
 	"https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Risk/hosts"
 	"https://raw.githubusercontent.com/danhorton7/pihole-block-tiktok/main/tiktok.txt"
 	  )
@@ -20,7 +21,7 @@ SOURCES=(
 TEMPFILE=/tmp/rawlist.tmp
 
 # File where the cleaned list will be installed
-TARGET=/etc/unbound/blocked-domains.conf
+TARGET=/etc/unbound/unbound.conf.d/blocked-domains.conf
 
 # Clean temporary download file
 echo "" > $TEMPFILE
@@ -45,11 +46,12 @@ wc -l $TEMPFILE.dedup
 # Now convert everything into a format that unbound can handle
 # see: https://deadc0de.re/articles/unbound-blocking-ads.html
 # https://stackoverflow.com/questions/11687216/awk-to-skip-the-blank-lines
+echo "server:" > $TEMPFILE.unbound
 cat $TEMPFILE.dedup \
-	| awk 'NF {print "local-zone: \""$1"\" redirect"
-	           print "local-data: \""$1" A 0.0.0.0\""}' > $TEMPFILE.unbound
+	| awk 'NF {print "\tlocal-zone: \""$1"\" redirect"
+	           print "\tlocal-data: \""$1" A 0.0.0.0\""}' >> $TEMPFILE.unbound
 
 # Install
 cp $TEMPFILE.unbound $TARGET
-systemctl reload unbound-chroot
+unbound-control reload
 
