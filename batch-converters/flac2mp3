@@ -11,7 +11,7 @@
 set -e
 
 for a in ./*.flac; do
-	ffmpeg -i "$a" -qscale:a 0 "${a[@]/%flac/mp3}"
+	ffmpeg -i "$a" -qscale:a 1 "${a[@]/%flac/mp3}"
 done
 
-#rm *.flac
+rm *.flac

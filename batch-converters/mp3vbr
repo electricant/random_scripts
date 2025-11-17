@@ -1,9 +1,16 @@
 #!/bin/bash -e
 #
-# Convert to mp3 all *.flac files within a directory using high quality VBR
+# Convert to mp3 VBR all files within a directory
 # See also:
 # https://wiki.archlinux.org/index.php/Convert_Flac_to_Mp3
 # https://trac.ffmpeg.org/wiki/Encode/MP3
+#
+# Average 	Bitrate range 	ffmpeg option
+# 	320 		320 CBR 	-b:a 320k (NB this is 32KB/s, or its max)
+# 	245 		220-260 	-q:a 0 (NB this is VBR from 220 to 260 KB/s)
+# 	225 		190-250 	-q:a 1
+# 	190 		170-210 	-q:a 2
+#	175 		150-195 	-q:a 3
 #
 
 # Do not destroy directories. Exit on error
@@ -11,7 +18,7 @@ set -e
 
 for a in *.mp3; do
 	mv "$a" "$a.old"
-	ffmpeg -i "$a.old" -qscale:a 2 "$a"
+	ffmpeg -i "$a.old" -qscale:a 1 "$a"
 done
 
 rm *.old
