@@ -23,12 +23,15 @@ set -o pipefail
 
 # List of services to dump
 services=(
+	"caddy-chroot.service"
+#	"chezdav@.service"
+	"dnsupdate.service"
+	"dnsupdate.timer"
+	"expenseowl.service"
 	"lighttpd-chroot.service"
 	"postgresql-chroot.service"
 	"transmission-daemon-chroot.service"
-	"unbound-chroot.service"
-	"dnsupdate.service"
-	"dnsupdate.timer"
+#	"unbound-chroot.service"
 )
 
 for s in "${services[@]}"; do

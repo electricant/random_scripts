@@ -1,0 +1,26 @@
+[Unit]
+Description=PHP-FPM inside chroot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+RootDirectory=/opt/chroot/alpine-webserver
+MountAPIVFS=true
+PrivateDevices=true
+
+BindReadOnlyPaths=/dev/log /run/systemd/journal/socket /run/systemd/journal/stdout
+BindPaths=/var/www
+
+# PHP-FPM will create /run/php-fpm/php-fpm.sock inside the chroot
+RuntimeDirectory=php-fpm
+RuntimeDirectoryMode=0755
+
+ExecStart=/usr/sbin/php-fpm -F
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+

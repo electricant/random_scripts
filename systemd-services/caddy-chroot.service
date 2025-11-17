@@ -1,0 +1,30 @@
+[Unit]
+Description=Caddy web server inside chroot
+After=network-online.target
+Wants=network-online.target php-fpm-chroot.service
+
+[Service]
+Type=simple
+
+RootDirectory=/opt/chroot/alpine-webserver
+MountAPIVFS=true
+PrivateDevices=true
+
+# Access to logs and journal from inside chroot
+BindReadOnlyPaths=/dev/log /run/systemd/journal/socket /run/systemd/journal/stdout
+
+# Typical Caddy needs access to sites and TLS storage
+# (TLS storage dir must exist inside the chroot, or disable auto-cert)
+BindPaths=/var/www
+
+# Caddy often writes to /var/lib/caddy and /var/log/caddy inside chroot
+RuntimeDirectory=caddy
+RuntimeDirectoryMode=0755
+
+ExecStart=/usr/bin/caddy run --config /etc/caddy/Caddyfile
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
+
