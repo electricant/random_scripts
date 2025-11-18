@@ -6,7 +6,7 @@ Wants=network-online.target php-fpm-chroot.service
 [Service]
 Type=simple
 
-RootDirectory=/opt/chroot/alpine-webserver
+RootDirectory=/opt/chroot/alpine-caddyweb
 MountAPIVFS=true
 PrivateDevices=true
 
@@ -21,7 +21,7 @@ BindPaths=/var/www
 RuntimeDirectory=caddy
 RuntimeDirectoryMode=0755
 
-ExecStart=/usr/bin/caddy run --config /etc/caddy/Caddyfile
+ExecStart=/usr/sbin/caddy run --config /etc/caddy/Caddyfile
 Restart=always
 RestartSec=30
 
