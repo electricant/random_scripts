@@ -1,0 +1,18 @@
+#!/bin/bash -e
+#
+# Convert all *.mp3 files in the directory to high-quality Opus.
+# Not ideal due to increased quality loss.
+# Uses 160 kbps, which is more than transparent for most music. Increase if needed.
+#
+# Frame Duration (ms) | Typical Use Case
+#     2.5, 5, 10      | Ultra-low latency (e.g., VoIP, gaming)
+#     20,Default      | balanced for most uses and for maximum compatibility
+#     40, 60          | High-quality offline encoding (e.g., music, podcasts)
+#
+set -e
+
+for a in ./*.mp3; do
+	ffmpeg -i "$a" -c:a libopus -b:a 160k -frame_duration 40 "${a[@]/%mp3/opus}"
+done
+
+rm *.mp3

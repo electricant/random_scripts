@@ -7,9 +7,9 @@ set -e
 # Enable extra globbing options
 shopt -s extglob
 
-mkdir "$1_mozjpegged"
+mkdir "$1/_mozjpegged"
 
 for a in "$1/"*.@(jpg|JPG|jpeg|JPEG); do
 	echo Processing "$a"
-	cjpeg -quality 90 "$a" > "$1_mozjpegged"/$(basename "$a")
+	cjpeg -quality 90 "$a" > "$1/_mozjpegged"/$(basename "$a")
 done
