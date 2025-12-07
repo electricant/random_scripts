@@ -70,7 +70,15 @@ mkdir -p "$local_destination/chroots"
 
 for chroot in /opt/chroot/*/ ; do
       echo "INFO: Compressing $chroot..."
-      tar c --zstd -f --warning=no-file-changed --exclude='var/lib/postgresql' \
+      tar c --zstd -f --warning=no-file-changed \
+		--exclude='var/lib/postgresql' \
+		--exclude='dev/*'   \
+		--exclude='proc/*'  \
+		--exclude='sys/*'   \
+		--exclude='run/*'   \
+		--exclude='tmp/*'   \
+        	--exclude='mnt/*'   \
+        	--exclude='media/*' \
 		"$local_destination/chroots/$(basename $chroot).tar.zstd" $chroot
 done
 

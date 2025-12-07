@@ -1,0 +1,73 @@
+#
+# Iptables rules to protect this server
+#
+
+# Flush existing rules and add RATE_LIMIT chain
+iptables -F
+iptables -X RATE_LIMIT 2>/dev/null
+iptables -N RATE_LIMIT
+
+########################################
+# Trusted connections
+########################################
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -i tun0 -j ACCEPT
+iptables -A INPUT -s 192.168.0.0/25 -j ACCEPT
+# Allow all incoming broadcast traffic on the LAN interface
+sudo iptables -A INPUT -i eth0 -d 255.255.255.255 -j ACCEPT
+sudo iptables -A INPUT -i eth0 -d 192.168.0.255 -j ACCEPT
+
+#######################################
+# Baseline safe rules
+#######################################
+iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+iptables -A INPUT -s 192.168.0.2 ! -i lo -j DROP
+iptables -A INPUT -i eth0 -s 10.0.0.0/8 -j DROP
+iptables -A INPUT -i eth0 -s 172.16.0.0/12 -j DROP
+iptables -A INPUT -i eth0 -s 169.254.0.0/16 -j DROP
+iptables -A INPUT -i eth0 -s 127.0.0.0/8 -j DROP
+
+iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p icmp -m conntrack --ctstate NEW -j ACCEPT
+
+########################################
+# Publicly exposed services
+# (applies to internet + untrusted LAN)
+########################################
+iptables -A INPUT -p tcp --dport 4662 -j ACCEPT
+iptables -A INPUT -p udp --dport 4662 -j ACCEPT
+
+iptables -A INPUT -i eth0 -m conntrack --ctstate NEW -j RATE_LIMIT
+
+########################################
+# Fallback logging + default DROP
+########################################
+iptables -A INPUT -j LOG --log-prefix "INPUT dropped: "
+iptables -P INPUT DROP
+
+########################################
+# RATE_LIMIT CHAIN
+########################################
+
+# Limit SSH connections. Reject connection (with RST to mimic closed port) if:
+# 	>= 2 new packets every 10s
+# 	>= 3 new packets every 5 min
+# Keep a list of bad by ip addresses
+# see:
+# https://wiki.archlinux.org/title/Simple_stateful_firewall#Protection_against_other_attacks
+iptables -A RATE_LIMIT -m recent --name ssh_rl --rttl --rcheck \
+	--hitcount 2 --seconds 10 -p tcp -j REJECT --reject-with tcp-reset
+iptables -A RATE_LIMIT -m recent --name ssh_rl --rttl --rcheck \
+	--hitcount 3 --seconds 300 -p tcp -j REJECT --reject-with tcp-reset
+iptables -A RATE_LIMIT -p tcp --dport 22 -m recent --name ssh_rl --set -j ACCEPT
+
+# HTTP & HTTPS: 10 new packet/s, with a generous burst. Use a simple ratelimit
+iptables -A RATE_LIMIT -p tcp --dport 80 \
+	-m limit --limit 10/sec --limit-burst 100 -j ACCEPT
+iptables -A RATE_LIMIT -p tcp --dport 443 \
+	-m limit --limit 10/sec --limit-burst 100 -j ACCEPT
+
+########################################
+# End of RATE_LIMIT: fall through
+########################################
+iptables -A RATE_LIMIT -j RETURN
