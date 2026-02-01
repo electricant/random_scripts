@@ -42,7 +42,8 @@ while [[ "$#" -gt 0 ]]; do
 	case $1 in
 		-l|--list-snapshots)
 			for d in "$SRC_DIR/.snapshots"/*; do
-				sudo btrfs subvolume show "$d" | egrep "Name|Creation"
+				echo "$d:"
+				btrfs subvolume show "$d" | egrep "Name|Creation"
 			done
 			shift ;;
 		*)
