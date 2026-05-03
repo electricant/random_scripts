@@ -10,8 +10,11 @@
 #
 set -e
 
+TARGET_BITRATE=192  # kbps
+
 for a in ./*.flac; do
-	ffmpeg -i "$a" -c:a libopus -b:a 160k -frame_duration 40 "${a[@]/%flac/opus}"
+	ffmpeg -i "$a" -c:a libopus -b:a "${TARGET_BITRATE}k" -frame_duration 40 \
+		-ac 2 "${a[@]/%flac/opus}"
 done
 
 rm *.flac
