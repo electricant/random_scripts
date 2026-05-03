@@ -38,7 +38,7 @@ EXCLUDE_FILE="/home/pol/random_scripts/backup/exclude.cfg"
 
 # Function that returns the space used in GB for $TARGET_DIR
 function backup_folder_size_GB { 
-	du -s --block-size=1G $TARGET_DIR | tail -1 | awk '{print $1}'
+	du -s --block-size=1G "$TARGET_DIR" | tail -1 | awk '{print $1}'
 }
 
 # Function to return the oldest backup folder name
@@ -62,7 +62,7 @@ fi
 # Rotate indefinitely (will delete later if quota is exceeded)
 local_destination="$TARGET_DIR/$BACKUP_PREFIX.$(date +"%Y%m%d")"
 
-cp -alf $(get_newest_backup) $local_destination \
+cp -alf "$(get_newest_backup)" "$local_destination" \
 	|| echo "WARNING: $local_destination not hard linked."
 
 # Execute backup to the newly created directory
@@ -70,21 +70,34 @@ mkdir -p "$local_destination/chroots"
 
 for chroot in /opt/chroot/*/ ; do
       echo "INFO: Compressing $chroot..."
-      tar c --zstd -f --warning=no-file-changed --exclude='var/lib/postgresql' \
-		"$local_destination/chroots/$(basename $chroot).tar.zstd" $chroot
+      tar c --zstd --warning=no-file-changed \
+		--exclude='var/lib/postgresql' \
+		--exclude='dev/*'   \
+		--exclude='proc/*'  \
+		--exclude='sys/*'   \
+		--exclude='run/*'   \
+		--exclude='tmp/*'   \
+        	--exclude='mnt/*'   \
+        	--exclude='media/*' \
+		-f "$local_destination/chroots/$(basename $chroot).tar.zstd" \
+	     	"$chroot"
 done
 
 for src_dir in "${SOURCE_DIRS[@]}"
 do
       echo "INFO: Copying '$src_dir'..."
       rsync -aAHX -h --info=stats1,del2 --delete \
-            --exclude-from="$EXCLUDE_FILE" "$src_dir" $local_destination
+            --exclude-from="$EXCLUDE_FILE" "$src_dir" "$local_destination"
 done
 
 echo "INFO: Dumping databases..."
-# Reload with: zstdcat pg_dump.zstd | psql postgres
-su - postgres -c 'pg_dumpall -h localhost' \
-	| zstd -fo "$local_destination/pg_dump.zstd"
+if pg_isready -h localhost -q; then
+    # Reload with: zstdcat pg_dump.zstd | psql postgres
+    su - postgres -c 'pg_dumpall -h localhost' \
+            | zstd -fo "$local_destination/pg_dump.zstd"
+else
+    echo "WARNING: PostgreSQL is not running, skipping database dump."
+fi
 
 # Check and enforce quota usage
 echo "INFO: Quota usage in $TARGET_DIR is $(backup_folder_size_GB)/$BACKUP_MAX_SIZE_GB GB"
@@ -92,8 +105,14 @@ echo "INFO: Quota usage in $TARGET_DIR is $(backup_folder_size_GB)/$BACKUP_MAX_S
 while [ $(backup_folder_size_GB) -gt $BACKUP_MAX_SIZE_GB ]
 do
 	to_del=$(get_oldest_backup)
+	if [ -z "$to_del" ] || [ "$to_del" = "$local_destination" ]; then
+      	echo "ERROR: Cannot free enough space without deleting current" \
+		     " backup. Giving up."
+        	exit 1
+    	fi
+
 	echo "INFO: Deleting $to_del to free up space."
-	rm -rf $to_del
+	rm -rf "$to_del"
 	echo "INFO: Quota usage is now $(backup_folder_size_GB) GB."
 done
 

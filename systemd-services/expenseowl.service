@@ -1,3 +1,4 @@
+# /etc/systemd/system/expenseowl.service
 [Unit]
 Description=ExpenseOwl service
 After=network.target
@@ -7,9 +8,9 @@ StartLimitIntervalSec=0
 Type=simple
 User=www-data
 Group=www-data
-ExecStart=/var/www/expenseowl/expenseowl-linux-amd64 -data /mnt/data/expenseowl
+ExecStart=/var/www/expenseowl/expenseowl-linux-amd64
 
-# Working directory (optional but good if your app needs relative paths)
+# Run from the directory that should contain ./data
 WorkingDirectory=/mnt/data/expenseowl
 
 # Restart policy

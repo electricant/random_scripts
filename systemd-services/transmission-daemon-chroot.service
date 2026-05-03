@@ -10,6 +10,7 @@ MountAPIVFS=true
 User=debian-transmission
 Group=uuidd
 Type=simple
+Nice=10
 ExecStart=/usr/bin/transmission-daemon -f --log-level=info -g /etc/transmission-daemon
 ExecStop=/bin/kill -s STOP $MAINPID
 ExecReload=/bin/kill -s HUP $MAINPID
