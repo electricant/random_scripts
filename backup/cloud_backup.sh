@@ -51,6 +51,15 @@ function get_newest_backup {
 	find "$TARGET_DIR" -maxdepth 1 -name "$BACKUP_PREFIX*" | sort | tail -n1
 }
 
+# Acquire a lock file to prevent double runs
+lockfile="/run/lock/cloud_backup.lock"
+if [ -e "$lockfile" ]; then
+    echo "ERROR: Backup script already running. Exiting."
+    exit 1
+fi
+trap 'rm -f "$lockfile"' EXIT
+touch "$lockfile"
+
 # Check whether the 'is_backup_target" file exists in $TARGET_DIR
 # If it does not exist exit immediately
 if [ ! -f "$TARGET_DIR/is_backup_target" ]
@@ -62,8 +71,13 @@ fi
 # Rotate indefinitely (will delete later if quota is exceeded)
 local_destination="$TARGET_DIR/$BACKUP_PREFIX.$(date +"%Y%m%d")"
 
-cp -alf "$(get_newest_backup)" "$local_destination" \
-	|| echo "WARNING: $local_destination not hard linked."
+# Create new backup directory with hardlinks from newest backup if it exists
+newest=$(get_newest_backup)
+if [ -n "$newest" ] && [ -d "$newest" ]; then
+    cp -alf "$newest" "$local_destination" || echo "WARNING: Hardlink copy failed for $local_destination"
+else
+    mkdir -p "$local_destination"
+fi
 
 # Execute backup to the newly created directory
 mkdir -p "$local_destination/chroots"
