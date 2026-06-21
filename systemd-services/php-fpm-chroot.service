@@ -5,10 +5,13 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+User=www-data
+Group=www-data
 
 RootDirectory=/opt/chroot/alpine-caddyweb
 MountAPIVFS=true
 PrivateDevices=true
+PrivateTmp=true
 
 BindReadOnlyPaths=/dev/log /run/systemd/journal/socket /run/systemd/journal/stdout
 BindPaths=/var/www

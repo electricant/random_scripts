@@ -40,7 +40,7 @@ ps -eo pcpu,pid,user:20,args --sort -pcpu \
 echo ""
 sensors | grep temp1
 echo ""
-hddtemp /dev/sd[abcd] 2>&1
+hddtemp /dev/sd[a-z] 2>&1
 echo ""
 
 # kernel log
