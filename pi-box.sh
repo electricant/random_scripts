@@ -15,9 +15,10 @@ set -euo pipefail
 # Nothing is written outside /nix/store and $PI_STATE.
 
 # --- knobs ---------------------------------------------------------------
-PI_STATE="${PI_STATE:-$HOME/.local/share/pi-sandbox}"   # all persistent state
-PI_FLAKE="${PI_FLAKE:-nixpkgs}"                          # pin: github:NixOS/nixpkgs/<rev>
-PI_AGENT="${PI_AGENT:-$PI_FLAKE#pi-coding-agent}"        # the agent itself
+PI_STATE="${PI_STATE:-$HOME/.local/share/pi-sandbox}" # Persistent state
+PI_FLAKE="${PI_FLAKE:-nixpkgs}"	# pin: github:NixOS/nixpkgs/<rev>
+# The agent itself is fetched from the unstable repo
+PI_AGENT="github:NixOS/nixpkgs/nixos-unstable#pi-coding-agent"
 
 # Capability allowlist: every entry is a binary the agent's bash can reach.
 PI_PKGS=(
@@ -36,7 +37,8 @@ PI_PKGS=(
   diffutils           # diff, cmp
   # ---- extras ----
   jq
-  python3
+  python314
+  python314Packages.ddgs # for agent web search
   # gcc
   curl
 )
