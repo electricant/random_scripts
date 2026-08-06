@@ -1,8 +1,8 @@
-# /etc/systemd/system/expenseowl.service
 [Unit]
 Description=ExpenseOwl service
 After=network.target
 StartLimitIntervalSec=0
+RequiresMountsFor=/var/www /mnt/data
 
 [Service]
 Type=simple

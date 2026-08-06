@@ -1,0 +1,23 @@
+[Unit]
+Description=FreshRSS feed actualization timer
+Requires=freshrss-actualize.service
+
+[Timer]
+Unit=freshrss-actualize.service
+
+# --- DAYTIME: fires every hour, 05:00-21:00 UTC ---
+# "05..21/1" = start at 05, step by 1h, stop at 21 (inclusive)
+OnCalendar=*-*-* 05..21/1:00:00
+
+# --- NIGHT: fires every 3h, anchored at 01:00 UTC ---
+# expands to: 01,04,07,10,13,16,19,22
+# (07/10/13/16/19 overlap harmlessly with the rule above)
+# the night-relevant hits are 22, 01, 04
+OnCalendar=*-*-* 01/3:00:00
+
+Persistent=true
+AccuracySec=15min
+WakeSystem=false
+
+[Install]
+WantedBy=timers.target

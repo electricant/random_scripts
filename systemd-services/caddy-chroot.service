@@ -1,7 +1,8 @@
 [Unit]
 Description=Caddy web server inside chroot
-After=network-online.target
+After=network-online.target php-fpm-chroot.service
 Wants=network-online.target php-fpm-chroot.service
+RequiresMountsFor=/var/www
 
 [Service]
 Type=simple

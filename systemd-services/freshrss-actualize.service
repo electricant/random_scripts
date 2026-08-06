@@ -1,30 +1,20 @@
 [Unit]
-Description=PHP-FPM inside chroot
+Description=FreshRSS feed actualization
 After=network-online.target
 Wants=network-online.target
 RequiresMountsFor=/var/www
 
 [Service]
-Type=simple
+Type=oneshot
 User=www-data
 Group=www-data
-
 RootDirectory=/opt/chroot/alpine-caddyweb
 MountAPIVFS=true
 PrivateDevices=true
 PrivateTmp=true
-
 BindReadOnlyPaths=/dev/log /run/systemd/journal/socket /run/systemd/journal/stdout
 BindPaths=/var/www
-
-# PHP-FPM will create /run/php-fpm/php-fpm.sock inside the chroot
-RuntimeDirectory=php-fpm
-RuntimeDirectoryMode=0755
-
-ExecStart=/usr/sbin/php-fpm84 -F
-Restart=always
-RestartSec=30
-
-[Install]
-WantedBy=multi-user.target
-
+ExecStart=/usr/bin/php84 /var/www/FreshRSS/app/actualize_script.php
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=FreshRSS-actualize
