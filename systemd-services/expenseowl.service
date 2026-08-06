@@ -2,7 +2,7 @@
 Description=ExpenseOwl service
 After=network.target
 StartLimitIntervalSec=0
-RequiresMountsFor=/var/www /mnt/data
+RequiresMountsFor=/var/www
 
 [Service]
 Type=simple
@@ -11,7 +11,7 @@ Group=www-data
 ExecStart=/var/www/expenseowl/expenseowl-linux-amd64
 
 # Run from the directory that should contain ./data
-WorkingDirectory=/mnt/data/expenseowl
+WorkingDirectory=/var/www/expenseowl
 
 # Restart policy
 Restart=always
