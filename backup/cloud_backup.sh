@@ -53,12 +53,9 @@ function get_newest_backup {
 
 # Acquire a lock file to prevent double runs
 lockfile="/run/lock/cloud_backup.lock"
-if [ -e "$lockfile" ]; then
-    echo "ERROR: Backup script already running. Exiting."
-    exit 1
-fi
-trap 'rm -f "$lockfile"' EXIT
-touch "$lockfile"
+exec 200>"$lockfile"
+flock -n 200 || \
+	{ echo "ERROR: Backup script already running. Exiting."; exit 1; }
 
 # Check whether the 'is_backup_target" file exists in $TARGET_DIR
 # If it does not exist exit immediately
@@ -74,7 +71,7 @@ local_destination="$TARGET_DIR/$BACKUP_PREFIX.$(date +"%Y%m%d")"
 # Create new backup directory with hardlinks from newest backup if it exists
 newest=$(get_newest_backup)
 if [ -n "$newest" ] && [ -d "$newest" ]; then
-    cp -alf "$newest" "$local_destination" || echo "WARNING: Hardlink copy failed for $local_destination"
+    cp -alf "$newest" "$local_destination"
 else
     mkdir -p "$local_destination"
 fi
@@ -93,7 +90,7 @@ for chroot in /opt/chroot/*/ ; do
 		--exclude='tmp/*'   \
         	--exclude='mnt/*'   \
         	--exclude='media/*' \
-		-f "$local_destination/chroots/$(basename $chroot).tar.zstd" \
+		-f "$local_destination/chroots/$(basename "$chroot").tar.zstd" \
 	     	"$chroot"
 done
 
@@ -116,7 +113,7 @@ fi
 # Check and enforce quota usage
 echo "INFO: Quota usage in $TARGET_DIR is $(backup_folder_size_GB)/$BACKUP_MAX_SIZE_GB GB"
 
-while [ $(backup_folder_size_GB) -gt $BACKUP_MAX_SIZE_GB ]
+while [ "$(backup_folder_size_GB)" -gt "$BACKUP_MAX_SIZE_GB" ]
 do
 	to_del=$(get_oldest_backup)
 	if [ -z "$to_del" ] || [ "$to_del" = "$local_destination" ]; then
